@@ -1,0 +1,13 @@
+ARG ALPINE_VERSION=3.19
+
+FROM alpine:${ALPINE_VERSION}
+
+# Servico: Imprimir um texto no terminal
+#ENTRYPOINT [ "echo" , "echo Parâmetro 1 - Instrução via ENTRYPOINT", "\n"]
+#CMD [ "Parâmetro 2 - Instrução via CMD" ]
+#CMD ["/bin/sh", "-c", "echo Parâmetro 1 - Instrução via CMD"]
+
+# Serviço (processo): listar o conteúdo do diretorio raiz
+#ENTRYPOINT [ "ls" ]
+COPY ./dockerfile-entrypoint.sh /start/dockerfile-entrypoint.sh
+ENTRYPOINT [ "/start/dockerfile-entrypoint.sh" ]

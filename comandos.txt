@@ -1,0 +1,187 @@
+- Limpar todo ambiente
+	* docker system prune -a
+
+- Imagem
+	* Listar imagens: docker image ls | docker image
+	* Remover imagens: docker image rm <nome | id> | docker rni <nome | id>
+	* Baixar uma versão especifica: docker pull postgresql: 9.4
+	* Cria imagem com base em um arquivo Dockfile: docker build -t app-nodejs .
+	* Roda a imagem em um container: docker run app-nodejs
+	* binde de portas: docker run -p 3000:3000 app-nodejs-net 
+	* Renomear uma tag de uma imagem: docker tag fe27308872e1 argus-academy/app-nodejs:1.0.0 (namespace/repository:version)
+	* Manipulação de imagens: docker images
+	* Inspecionando imagens: docker inspect <image>
+	* Executar um comando no docker: docker run -it 26fc80ffe8cc /bin/sh
+	
+	obs: imagens alpine são imagens otimizadas só com o necessário para execução
+	 
+- Container
+	* Listar Containers: docker container ls
+	* Rodar um container: docker run <image | id>
+	* Remover um container: docker container rm 8de9115b40bd
+	* Lista containers em execução: docker ps -a
+	* Para um container em execução: docker container stop 8de9115b40bd
+	
+	
+- Arquivos
+	Dockerfile (Arquivo de configuração de imagem)
+
+	FROM
+	Exemplo 1: Básico	
+		FROM node:20.10.0-alpine 
+		COPY server.js /opt/app-nodejs/
+		WORKDIR /opt/app-nodejs/
+		CMD node server.js
+		
+	RUN
+	Exemplo 2: Instalando dependecias
+		FROM alpine:3.19.0
+
+		#instalando dependencias no SO
+		RUN apk add --no-cache nodejs
+		RUN apk add --no-cache npm
+
+	Exemplo 3:
+		FROM alpine:3.19.0
+
+		#instalando dependencias no SO
+		RUN apk add --no-cache nodejs && apk add --no-cache npm && apk add --no-cache git
+
+	Exemplo 4:
+		FROM alpine:3.19.0
+
+		#instalando dependencias no SO
+		RUN apk add --no-cache nodejs && \
+		  apk add --no-cache npm && \
+		  apk add --no-cache git
+
+	Exemplo 5:
+		FROM alpine:3.19.0
+
+		#instalando dependencias no SO
+		RUN apk add --no-cache nodejs \ 
+		 && apk add --no-cache npm \
+		 && apk add --no-cache git
+
+	Exemplo 6:
+		RUN <<EOF apk add --no-cache nodejs 
+		  apk add --no-cache npm 
+		  apk add --no-cache git
+		  EOF
+		  
+	LABELS
+		LABEL desenvolvedor="Argus Academy"
+		LABEL descricao="Imagem criada para exemplificar a utilização de Labels no Documento"
+		LABEL versao="1.0"
+		LABEL contato="+55 85 99889364"
+		
+		docker image inspect --format='{{json .Config.Labels}}' 7b2a98939099		
+	ENV	
+		#Sem espaços
+		ENV FRONT_PRD="https://meuapp.com.br"
+		ENV BACK_PRD="https://meuapp.com.br:3002"
+	
+		#Sintaxe alternativa
+		ENV FRONT_PRD "https://meuapp.com.br"
+		ENV BACK_PRD "https://meuapp.com.br:3002"
+		
+		#Multiplas Linhas
+		ENV FRONT_PRD="https://meuapp.com.br" \
+		BACK_PRD="https://meuapp.com.br:3002"
+		
+		#Reutilizar
+		ENV DESENVOLVEDOR="cledsonfs"
+		...
+		...
+		LABEL desenvolvedor=${DESENVOLVEDOR}
+	ARG
+		Exemplo 1
+		ARG ALPINE_VERSION
+		...
+		...
+		FROM alpine:${ALPINE_VERSION}
+		
+		docker build --build-arg ALPINE_VERSION=3.18 -t argus-academy/dockerfile-arg1 .
+		
+		Exemplo 2
+		ARG ALPINE_VERSION=3.18 (valor padrão)
+		...
+		...
+		FROM alpine:${ALPINE_VERSION}	
+		
+		Exemplo 3
+		#Multiplos argumentos
+		ARG ALPINE_VERSION=3.18 (valor padrão)
+		...
+		...
+		FROM alpine:${ALPINE_VERSION}	
+		
+		ARG FRONT_PRD="https://meuapp.com.br"
+		ARG BACK_PRD="https://meuapp.com.br:3002"
+
+		ARG FRONT_PRD=${FRONT_PRD}
+		ARG BACK_PRD=${BACK_PRD}
+		docker build --build-arg ALPINE_VERSION=3.18 --build-arg FRONT_PRD="https://meuapp1.com.br" --build-arg BACK_PRD="https://meuapp1.com.br:3002" -t argus-academy/dockerfile-arg1 .
+	USER
+		#adiciona um usuario no so
+		RUN adduser -D jorge
+
+		#define o usuário responsável pela execução dos próximos RUNs
+		USER jorge
+		...
+		...
+		ENV MSG "Varial de ambiente criada no Dokerfile"
+
+		RUN echo ${MSG} > /tmp/arquivo_criado_durante_o_builder_da_image.txt
+		
+	CMD
+		Exemplo 1
+		# so pode exixtir um
+		CMD ["/bin/sh","-c","echo comando executado automaticamente quando o container é executado"]
+		
+		Exemplo 2
+		docker run dd5f7b0eea19 /bin/sh -c 'echo CMD do RUN sobrepõe o do DOckerfile'
+		
+		Exemplo 2
+		docker run dd5f7b0eea19 printenv
+		
+	ADD
+		ADD <origem> <destino>
+		ADD ./arquivo_local1.txt /tmp/
+		ADD ./arquivo_local2.txt /tmp/
+		ADD --chown=jorge ./arquivo_local2.txt /tmp/
+		ADD --chown=jorge:dev --./arquivo_local2.txt /tmp/
+		ADD --chown=jorge:dev --chmod=777 ./arquivo_local2.txt /tmp/
+
+		ADD --chown=jorge:dev --chmod=777 ./arquivo_* /tmp/curinga
+		ADD --chown=jorge:dev --chmod=777 ./arquivo_ab?.t?? /tmp/curinga
+		ADD --chown=jorge:dev https://argus-academy.com/cursos/docker_-_dominando_a_criacao_e_o_gerenciamento_de_containers/server.tar.gz /opt/app
+	
+	COPY
+		
+		COPY <origem> <destino>
+		COPY ./arq1.txt ./arq2.txt ./arq3.*xt ./arq3.???  /tmp/
+		COPY . /tmp/all/
+		COPY ./arquivo_local1.txt /tmp/
+		COPY ./arquivo_local2.txt /tmp/
+		COPY --chown=jorge ./arquivo_local2.txt /tmp/
+		COPY --chown=jorge:dev --./arquivo_local2.txt /tmp/
+		COPY --chown=jorge:dev --chmod=777 ./arquivo_local2.txt /tmp/
+
+		COPY --chown=jorge:dev --chmod=777 ./arquivo_* /tmp/curinga
+		COPY --chown=jorge:dev --chmod=777 ./arquivo_ab?.t?? /tmp/curinga
+
+	ENTRYPOINT
+    ENTRYPOINT [ "echo" , "echo Parâmetro 1 - Instrução via ENTRYPOINT", "\n"]
+    docker run --entrypoint echo  4e53321e14aa "Este é o texto que deve ser executado no echo do entrypoint"
+
+  WORKDIR
+    WORKDIR /opt/code/
+  
+  EXPOSE
+    # sem nad é tcp pode ser udp tambem
+    EXPOSE 3000/tcp
+    EXPOSE 3000/udp
+    EXPOSE 3030
+    docker run -p 3002:3000/tcp -p 3001:3000/udp -p 8080:3030 9edf1891af5c
+			

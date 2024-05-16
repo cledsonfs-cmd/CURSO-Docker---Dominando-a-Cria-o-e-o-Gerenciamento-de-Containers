@@ -1,0 +1,22 @@
+FROM alpine:3.19.0
+
+
+#instalando dependencias no SO
+#RUN apk add --no-cache nodejs
+#RUN apk add --no-cache npm
+#RUN apk add --no-cache git
+
+#RUN apk add --no-cache nodejs && apk add --no-cache npm && apk add --no-cache git
+
+#RUN apk add --no-cache nodejs && \
+#  apk add --no-cache npm && \
+#  apk add --no-cache git
+
+#RUN apk add --no-cache nodejs \ 
+# && apk add --no-cache npm \
+# && apk add --no-cache git
+
+RUN <<EOF apk add --no-cache nodejs 
+  apk add --no-cache npm 
+  apk add --no-cache git
+  EOF

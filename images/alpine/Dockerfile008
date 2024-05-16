@@ -1,0 +1,30 @@
+ARG ALPINE_VERSION
+
+FROM alpine:${ALPINE_VERSION}
+
+RUN <<EOF apk add --no-cache nodejs 
+  apk add --no-cache npm 
+  apk add --no-cache git
+EOF
+
+#adiciona um usuario no so
+RUN adduser -D jorge
+
+#define o usuário responsável pela execução dos próximos RUNs
+USER jorge
+
+LABEL desenvolvedor="Argus Academy"
+LABEL descricao="Imagem criada para exemplificar a utilização de Labels no Documento"
+LABEL versao="1.0"
+LABEL contato="+55 85 99889364"
+
+ARG FRONT_PRD="https://meuapp.com.br"
+ARG BACK_PRD="https://meuapp.com.br:3002"
+
+ARG FRONT_PRD=${FRONT_PRD}
+ARG BACK_PRD=${BACK_PRD}
+
+
+ENV MSG "Varial de ambiente criada no Dokerfile"
+
+RUN echo ${MSG} > /tmp/arquivo_criado_durante_o_builder_da_image.txt

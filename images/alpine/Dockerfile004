@@ -1,0 +1,29 @@
+ARG ALPINE_VERSION
+
+#FROM alpine:3.19.0
+FROM alpine:${ALPINE_VERSION}
+
+RUN <<EOF apk add --no-cache nodejs 
+  apk add --no-cache npm 
+  apk add --no-cache git
+EOF
+
+
+LABEL desenvolvedor="Argus Academy"
+LABEL descricao="Imagem criada para exemplificar a utilização de Labels no Documento"
+LABEL versao="1.0"
+LABEL contato="+55 85 99889364"
+
+ARG FRONT_PRD="https://meuapp.com.br"
+ARG BACK_PRD="https://meuapp.com.br:3002"
+
+#Sem espaços
+#ENV FRONT_PRD="https://meuapp.com.br"
+#ENV BACK_PRD="https://meuapp.com.br:3002"
+
+ARG FRONT_PRD=${FRONT_PRD}
+ARG BACK_PRD=${BACK_PRD}
+
+#Sintaxe alternativa
+#ENV FRONT_PRD "https://meuapp.com.br"
+#ENV BACK_PRD "https://meuapp.com.br:3002"
