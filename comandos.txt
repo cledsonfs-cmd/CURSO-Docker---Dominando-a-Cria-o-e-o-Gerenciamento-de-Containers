@@ -184,4 +184,44 @@
     EXPOSE 3000/udp
     EXPOSE 3030
     docker run -p 3002:3000/tcp -p 3001:3000/udp -p 8080:3030 9edf1891af5c
-			
+
+-VOLUMES
+	Bind Mount
+	docker run -d -p 127.0.0.1:3000:3000 --mount type=bind,source="/home/cledsonfs/GitHub/CURSO-Docker---Dominando-a-Cria-o-e-o-Gerenciamento-de-Containers/volumes/Bind Mount/getting-started-app-main/src",target=/app/src  getting-started
+	docker run -d -p 127.0.0.1:3000:3000 -v "/home/cledsonfs/GitHub/CURSO-Docker---Dominando-a-Cria-o-e-o-Gerenciamento-de-Containers/volumes/Bind Mount/getting-started-app-main/src:/app/src" getting-started
+
+	(SOMENTE LEITURA)
+	docker run -d -p 127.0.0.1:3000:3000 --mount type=bind,source="/home/cledsonfs/GitHub/CURSO-Docker---Dominando-a-Cria-o-e-o-Gerenciamento-de-Containers/volumes/Bind Mount/getting-started-app-main/src",target=/app/src,readonly  getting-started
+	docker run -d -p 127.0.0.1:3000:3000 -v "/home/cledsonfs/GitHub/CURSO-Docker---Dominando-a-Cria-o-e-o-Gerenciamento-de-Containers/volumes/Bind Mount/getting-started-app-main/src:/app/src:ro" getting-started
+
+	Volume
+	#docker build -t postgresql .
+	
+	docker run -d -p 5432:5432 --mount type=volume,source=dados-postgres,target=/var/lib/postgresql/data postgresql 
+	
+	(SOMENTE LEITURA)
+	docker run -d -p 5432:5432 --mount type=volume,source=dados-postgres,target=/var/lib/postgresql/data,readonly postgresql 
+
+	docker volume ls
+
+	docker volume inspect 02354ffe8
+
+	docker volume create nome_do_volume
+
+	docker volume rm nome_do_volume
+
+	docker volume prune asefaf23232323  (exclui os não utilizados)
+	docker volume prune --all | -a (exclui tudo)	
+
+	TMPFS
+	docker run -d -p 5432:5432 --mount type=tmpfs, target=/var/lib/postgresql/data postgres
+
+-CONTAINER
+	Inspecionar
+	docker container inspect 91a435735d01			
+
+	Parar
+	docker container stop 91a435735d01			
+
+	Executar em it(terminal interativo)
+	docker exec it 91a435735d01	/bin/sh
