@@ -225,3 +225,12 @@
 
 	Executar em it(terminal interativo)
 	docker exec it 91a435735d01	/bin/sh
+	
+	Copiar do host para o container
+	docker cp arq_host CONTAINER:dest_container
+	
+	Copiar do container para o host
+	docker cp CONTAINER:arq_container dest_host
+	
+	
+	
