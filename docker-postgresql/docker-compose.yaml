@@ -2,7 +2,7 @@
 version: "3.8"
 
 services:
-  db:
+  db-desenv:
     image: postgres:9.4.26-alpine
     container_name: db-desenv
     networks:
@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-postgresql:/var/lib/postgresql/data
+      - db-desenv:/var/lib/postgresql/data
 
   db-adminer:
     container_name: db-adminer
@@ -21,9 +21,6 @@ services:
       - db-postgresql-net
     ports:
       - "8090:8080"
-#    restart: always
-
-
 
 networks:
   db-postgresql-net:
@@ -31,4 +28,4 @@ networks:
     driver: bridge
 
 volumes:
-  db-postgresql:
+  db-desenv:
