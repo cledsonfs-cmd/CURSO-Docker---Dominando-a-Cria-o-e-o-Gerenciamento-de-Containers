@@ -1,0 +1,62 @@
+#criando meu primeiro docker compose
+version: "3.8"
+
+volumes:
+  db-app:
+  nosql-app:
+
+service:
+  
+  http:
+    container_name: http
+    image: nginx:stable-alpine3.17-slim
+    ports:
+      - "8080:80"
+      - "8443:443"
+  
+  front-end:
+    container_name: http
+    image: nginx:stable-alpine3.17-slim
+    build: 
+      context: ./front-end/
+      dockerfile: Dockerfile.dev
+      target: dev
+    volumes:
+      - ./front-end:/app
+    ports: 
+    - "3000:3000"
+
+  backe-end:    
+    build:
+      context: ./back-end/
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./back-end:/app        
+    ports: 
+      - 3001:3000
+  bd:
+    image: postgres:16.2-alpine3.19
+    container_name: db
+    environment:
+      - POSTGRES_PASSWORD=123456
+    volumes:
+      - db-app:/vat/lib/postgres/data
+
+  db-adminer:
+    container_name: db-adminer
+    image: adminer:4.8.1
+    ports:
+        - 8090:8080
+  nosql:
+    container_name: nosql
+    image: mongo:7.0.8-jammy
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - nosql-app:/data/db
+    env_file:
+      - ./mongo/.env
+  #cache
+  #messaging
