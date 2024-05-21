@@ -13,15 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - db-desenv:/var/lib/postgresql/data
-
-  db-adminer:
-    container_name: db-adminer
-    image: adminer:4.8.1
-    networks:
-      - db-postgresql-net
-    ports:
-      - "8090:8080"
-
+  
 networks:
   db-postgresql-net:
     name: db-postgresql-net
