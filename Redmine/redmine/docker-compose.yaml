@@ -1,0 +1,18 @@
+version: "3.1"
+
+services:
+  redmine:
+    image: redmine:5.1.2
+    restart: always
+    ports:
+      - 8080:3000
+    volumes:
+      - /opt/redmine/files/:/usr/src/redmine/files
+      - db-redmine:/usr/src/redimine/sqlite
+
+volumes:
+  db-redmine:
+# após instalar o container
+# 1. docker cp redmine.db redmine-redmine-1:/usr/src/redmine/sqlite
+# 2. chown -R redmine:redmine /usr/src/redmine/sqlite
+# 3. restartar o serviço
